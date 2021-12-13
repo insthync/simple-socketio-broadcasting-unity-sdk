@@ -58,12 +58,12 @@ namespace SimpleSocketIOBroadcastingSDK
                 onMsg.Invoke(response);
         }
 
-        public async void BroadcastAll(params object[] data)
+        public async void BroadcastAll(object data)
         {
             await client.EmitAsync("all", data);
         }
 
-        public async void BroadcastOther(params object[] data)
+        public async void BroadcastOther(object data)
         {
             await client.EmitAsync("other", data);
         }
