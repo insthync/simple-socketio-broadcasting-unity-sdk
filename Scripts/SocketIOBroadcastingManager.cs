@@ -63,7 +63,7 @@ namespace SimpleSocketIOBroadcastingSDK
             await client.EmitAsync("all", data);
         }
 
-        public async void BroadcastOther(object data)
+        public async void BroadcastOther(params object[] data)
         {
             await client.EmitAsync("other", data);
         }
