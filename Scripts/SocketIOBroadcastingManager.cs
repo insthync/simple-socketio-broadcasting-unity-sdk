@@ -40,7 +40,7 @@ namespace SimpleSocketIOBroadcastingSDK
         public async void Connect()
         {
             Disconnect();
-            client = new SocketIO("http://localhost:3000/");
+            client = new SocketIO(serviceAddress);
             client.On("msg", OnMsg);
             await client.ConnectAsync();
         }
