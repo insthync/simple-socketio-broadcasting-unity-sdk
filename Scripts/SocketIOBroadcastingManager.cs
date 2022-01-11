@@ -1,5 +1,6 @@
 ﻿using SocketIOClient;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SimpleSocketIOBroadcastingSDK
@@ -32,20 +33,20 @@ namespace SimpleSocketIOBroadcastingSDK
             DontDestroyOnLoad(gameObject);
         }
 
-        private void OnDestroy()
+        private async void OnDestroy()
         {
-            Disconnect();
+            await Disconnect();
         }
 
-        public async void Connect()
+        public async Task Connect()
         {
-            Disconnect();
+            await Disconnect();
             client = new SocketIO(serviceAddress);
             client.On("msg", OnMsg);
             await client.ConnectAsync();
         }
 
-        public async void Disconnect()
+        public async Task Disconnect()
         {
             if (client != null && client.Connected)
                 await client.DisconnectAsync();
@@ -58,12 +59,12 @@ namespace SimpleSocketIOBroadcastingSDK
                 onMsg.Invoke(response);
         }
 
-        public async void BroadcastAll(object data)
+        public async Task BroadcastAll(object data)
         {
             await client.EmitAsync("all", data);
         }
 
-        public async void BroadcastOther(object data)
+        public async Task BroadcastOther(object data)
         {
             await client.EmitAsync("other", data);
         }
