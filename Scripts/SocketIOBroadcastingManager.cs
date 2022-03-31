@@ -12,8 +12,6 @@ namespace SimpleSocketIOBroadcastingSDK
         {
             get
             {
-                if (!instance)
-                    new GameObject("_SocketIOBroadcastingManager").AddComponent<SocketIOBroadcastingManager>();
                 return instance;
             }
         }
