@@ -1,5 +1,7 @@
-﻿using SocketIOClient;
+﻿using Cysharp.Threading.Tasks;
+using SocketIOClient;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -39,20 +41,28 @@ namespace SimpleSocketIOBroadcastingSDK
         public async Task Connect()
         {
             await Disconnect();
-            client = new SocketIO(serviceAddress);
+            client = new SocketIO(serviceAddress, new SocketIOOptions()
+            {
+                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
+            });
             client.On("msg", OnMsg);
+            // Always accept SSL
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, policyErrors) => true;
             await client.ConnectAsync();
+            await UniTask.SwitchToMainThread();
         }
 
         public async Task Disconnect()
         {
             if (client != null && client.Connected)
                 await client.DisconnectAsync();
+            await UniTask.SwitchToMainThread();
             client = null;
         }
 
-        private void OnMsg(SocketIOResponse response)
+        private async void OnMsg(SocketIOResponse response)
         {
+            await UniTask.SwitchToMainThread();
             if (onMsg != null)
                 onMsg.Invoke(response);
         }
@@ -60,11 +70,13 @@ namespace SimpleSocketIOBroadcastingSDK
         public async Task BroadcastAll(object data)
         {
             await client.EmitAsync("all", data);
+            await UniTask.SwitchToMainThread();
         }
 
         public async Task BroadcastOther(object data)
         {
             await client.EmitAsync("other", data);
+            await UniTask.SwitchToMainThread();
         }
     }
 }
