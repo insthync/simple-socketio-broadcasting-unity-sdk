@@ -19,6 +19,7 @@ namespace SimpleSocketIOBroadcastingSDK
         }
 
         public string serviceAddress = "http://localhost:8212";
+        public bool autoConnectWhenSend = true;
         public event Action<SocketIOResponse> onMsg;
         private SocketIO client;
 
@@ -75,12 +76,16 @@ namespace SimpleSocketIOBroadcastingSDK
 
         public async Task BroadcastAll(object data)
         {
+            if (autoConnectWhenSend && (client == null || !client.Connected))
+                await Connect();
             await client.EmitAsync("all", data);
             await UniTask.SwitchToMainThread();
         }
 
         public async Task BroadcastOther(object data)
         {
+            if (autoConnectWhenSend && (client == null || !client.Connected))
+                await Connect();
             await client.EmitAsync("other", data);
             await UniTask.SwitchToMainThread();
         }
