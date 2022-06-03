@@ -76,7 +76,7 @@ namespace SimpleSocketIOBroadcastingSDK
 
         public async Task BroadcastAll(object data)
         {
-            if (autoConnectWhenSend && (client == null || !client.Connected))
+            if (autoConnectWhenSend && (client == null || client.Disconnected))
                 await Connect();
             await client.EmitAsync("all", data);
             await UniTask.SwitchToMainThread();
@@ -84,7 +84,7 @@ namespace SimpleSocketIOBroadcastingSDK
 
         public async Task BroadcastOther(object data)
         {
-            if (autoConnectWhenSend && (client == null || !client.Connected))
+            if (autoConnectWhenSend && (client == null || client.Disconnected))
                 await Connect();
             await client.EmitAsync("other", data);
             await UniTask.SwitchToMainThread();
