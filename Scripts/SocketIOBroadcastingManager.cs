@@ -17,7 +17,7 @@ namespace SimpleSocketIOBroadcastingSDK
                 return instance;
             }
         }
-
+        public SocketIOClient.Transport.TransportProtocol protocal = SocketIOClient.Transport.TransportProtocol.Polling;
         public string serviceAddress = "http://localhost:8212";
         public bool autoConnectWhenSend = true;
         public event Action<SocketIOResponse> onMsg;
@@ -47,7 +47,7 @@ namespace SimpleSocketIOBroadcastingSDK
             Debug.Log("[" + nameof(SocketIOBroadcastingManager) + "] Connecting to " + serviceAddress);
             client = new SocketIO(serviceAddress, new SocketIOOptions()
             {
-                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
+                Transport = protocal,
             });
             client.On("msg", OnMsg);
             // Always accept SSL
