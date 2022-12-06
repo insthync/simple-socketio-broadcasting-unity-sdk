@@ -78,7 +78,20 @@ namespace SimpleSocketIOBroadcastingSDK
         {
             if (autoConnectWhenSend && (client == null || client.Disconnected))
                 await Connect();
-            await client.EmitAsync("all", data);
+            if (client == null || client.Disconnected)
+            {
+                Debug.LogError($"[{nameof(SocketIOBroadcastingManager)}] Didn't connected to server yet, so it can't broadcast all");
+                return;
+            }
+            try
+            {
+                await client.EmitAsync("all", data);
+            }
+            catch
+            {
+                client = null;
+                await BroadcastAll(data);
+            }
             await UniTask.SwitchToMainThread();
         }
 
@@ -86,7 +99,20 @@ namespace SimpleSocketIOBroadcastingSDK
         {
             if (autoConnectWhenSend && (client == null || client.Disconnected))
                 await Connect();
-            await client.EmitAsync("other", data);
+            if (client == null || client.Disconnected)
+            {
+                Debug.LogError($"[{nameof(SocketIOBroadcastingManager)}] Didn't connected to server yet, so it can't broadcast other");
+                return;
+            }
+            try
+            {
+                await client.EmitAsync("other", data);
+            }
+            catch
+            {
+                client = null;
+                await BroadcastOther(data);
+            }
             await UniTask.SwitchToMainThread();
         }
     }
